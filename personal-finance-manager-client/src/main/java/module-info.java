@@ -3,8 +3,12 @@ module personal.finance.manager.client {
     requires javafx.controls;
     requires com.google.gson;
 
-    // required for JavaFX TableView and model access
-    opens org.example.models to javafx.base;
+    opens org.example.models to javafx.base, com.google.gson;
 
     exports org.example;
+    exports org.example.models;
+    exports org.example.controllers;
+    exports org.example.views;
+    exports org.example.dialogs;
+    exports org.example.utils;
 }
