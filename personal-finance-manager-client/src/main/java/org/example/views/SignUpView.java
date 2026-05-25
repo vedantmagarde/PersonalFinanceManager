@@ -1,247 +1,231 @@
 package org.example.views;
 
 import javafx.geometry.Pos;
-
 import javafx.scene.Scene;
-
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-
 import javafx.scene.layout.VBox;
 
 import org.example.controllers.SignUpController;
-
 import org.example.utils.Utilitie;
 import org.example.utils.ViewNavigator;
 
 public class SignUpView {
 
-    private Label expenseTrackerLabel = new Label("Personal Finance Manager");
+        private Label expenseTrackerLabel = new Label("Personal Finance Manager");
 
-    private TextField nameField = new TextField();
+        private TextField nameField = new TextField();
 
-    private TextField usernameField = new TextField();
+        private TextField usernameField = new TextField();
 
-    private PasswordField passwordField = new PasswordField();
+        private PasswordField passwordField = new PasswordField();
 
-    private PasswordField rePasswordField = new PasswordField();
+        private PasswordField rePasswordField = new PasswordField();
 
-    private Button registerButton = new Button("Register");
+        private Button registerButton = new Button("Register");
 
-    private Label loginLabel = new Label("Already have an account? Login here");
+        private Label loginLabel = new Label("Already have an account? Login here");
 
-    public void show() {
+        public void show() {
 
-        Scene scene = createScene();
+                Scene scene = createScene();
 
-        scene.getStylesheets().add(
-                getClass()
-                        .getResource("/style.css")
-                        .toExternalForm());
+                scene.getStylesheets().add(
+                                getClass()
+                                                .getResource("/style.css")
+                                                .toExternalForm());
 
-        new SignUpController(this);
+                new SignUpController(this);
 
-        ViewNavigator.switchViews(scene);
-    }
+                ViewNavigator.switchViews(scene);
+        }
 
-    private Scene createScene() {
+        private Scene createScene() {
 
-        VBox mainContainer = new VBox(44);
+                VBox mainContainer = new VBox();
 
-        mainContainer
-                .getStyleClass()
-                .addAll("main-background");
+                mainContainer
+                                .getStyleClass()
+                                .add("login-background");
 
-        mainContainer.setAlignment(
-                Pos.TOP_CENTER);
+                mainContainer.setAlignment(
+                                Pos.CENTER);
 
-        expenseTrackerLabel
-                .getStyleClass()
-                .addAll(
-                        "header",
-                        "text-white");
+                VBox signUpCard = new VBox(35);
 
-        VBox signUpFormContainer = createSignUpForm();
+                signUpCard
+                                .getStyleClass()
+                                .add("login-card");
 
-        mainContainer
-                .getChildren()
-                .addAll(
-                        expenseTrackerLabel,
-                        signUpFormContainer);
+                signUpCard.setAlignment(
+                                Pos.CENTER);
 
-        return new Scene(
-                mainContainer,
-                Utilitie.APP_WIDTH,
-                Utilitie.APP_HEIGHT);
-    }
+                expenseTrackerLabel
+                                .getStyleClass()
+                                .add("login-title");
 
-    private VBox createSignUpForm() {
+                VBox signUpFormContainer = createSignUpForm();
 
-        VBox signUpForm = new VBox(30);
+                signUpCard
+                                .getChildren()
+                                .addAll(
+                                                expenseTrackerLabel,
+                                                signUpFormContainer);
 
-        signUpForm.setAlignment(
-                Pos.CENTER);
+                mainContainer
+                                .getChildren()
+                                .add(signUpCard);
 
-        nameField
-                .getStyleClass()
-                .addAll(
-                        "field-background",
-                        "text-light-gray",
-                        "text-size-lg",
-                        "rounded-border");
+                return new Scene(
+                                mainContainer,
+                                Utilitie.APP_WIDTH,
+                                Utilitie.APP_HEIGHT);
+        }
 
-        nameField.setPromptText(
-                "Enter Name");
+        private VBox createSignUpForm() {
 
-        nameField.setMaxWidth(473);
+                VBox signUpForm = new VBox(24);
 
-        usernameField
-                .getStyleClass()
-                .addAll(
-                        "field-background",
-                        "text-light-gray",
-                        "text-size-lg",
-                        "rounded-border");
+                signUpForm.setAlignment(
+                                Pos.CENTER);
 
-        usernameField.setPromptText(
-                "Enter Email");
+                nameField
+                                .getStyleClass()
+                                .add("login-field");
 
-        usernameField.setMaxWidth(473);
+                nameField.setPromptText(
+                                "Enter Name");
 
-        passwordField
-                .getStyleClass()
-                .addAll(
-                        "field-background",
-                        "text-light-gray",
-                        "text-size-lg",
-                        "rounded-border");
+                usernameField
+                                .getStyleClass()
+                                .add("login-field");
 
-        passwordField.setPromptText(
-                "Enter Password");
+                usernameField.setPromptText(
+                                "Enter Email");
 
-        passwordField.setMaxWidth(473);
+                passwordField
+                                .getStyleClass()
+                                .add("login-field");
 
-        rePasswordField
-                .getStyleClass()
-                .addAll(
-                        "field-background",
-                        "text-light-gray",
-                        "text-size-lg",
-                        "rounded-border");
+                passwordField.setPromptText(
+                                "Enter Password");
 
-        rePasswordField.setPromptText(
-                "Re-Enter Password");
+                rePasswordField
+                                .getStyleClass()
+                                .add("login-field");
 
-        rePasswordField.setMaxWidth(473);
+                rePasswordField.setPromptText(
+                                "Re-Enter Password");
 
-        registerButton
-                .getStyleClass()
-                .addAll(
-                        "text-size-lg",
-                        "bg-light-blue",
-                        "text-white",
-                        "text-weight-700",
-                        "rounded-border");
+                registerButton
+                                .getStyleClass()
+                                .add("login-button");
 
-        registerButton.setMaxWidth(473);
+                nameField.setOnAction(
+                                event -> registerButton.fire());
 
-        loginLabel
-                .getStyleClass()
-                .addAll(
-                        "text-size-md",
-                        "text-light-gray",
-                        "text-underline",
-                        "link-text");
+                usernameField.setOnAction(
+                                event -> registerButton.fire());
 
-        signUpForm
-                .getChildren()
-                .addAll(
-                        nameField,
-                        usernameField,
-                        passwordField,
-                        rePasswordField,
-                        registerButton,
-                        loginLabel);
+                passwordField.setOnAction(
+                                event -> registerButton.fire());
 
-        return signUpForm;
-    }
+                rePasswordField.setOnAction(
+                                event -> registerButton.fire());
 
-    public Label getExpenseTrackerLabel() {
+                loginLabel
+                                .getStyleClass()
+                                .add("login-link");
 
-        return expenseTrackerLabel;
-    }
+                signUpForm
+                                .getChildren()
+                                .addAll(
+                                                nameField,
+                                                usernameField,
+                                                passwordField,
+                                                rePasswordField,
+                                                registerButton,
+                                                loginLabel);
 
-    public void setExpenseTrackerLabel(
-            Label expenseTrackerLabel) {
+                return signUpForm;
+        }
 
-        this.expenseTrackerLabel = expenseTrackerLabel;
-    }
+        public Label getExpenseTrackerLabel() {
 
-    public TextField getNameField() {
+                return expenseTrackerLabel;
+        }
 
-        return nameField;
-    }
+        public void setExpenseTrackerLabel(
+                        Label expenseTrackerLabel) {
 
-    public void setNameField(
-            TextField nameField) {
+                this.expenseTrackerLabel = expenseTrackerLabel;
+        }
 
-        this.nameField = nameField;
-    }
+        public TextField getNameField() {
 
-    public TextField getUsernameField() {
+                return nameField;
+        }
 
-        return usernameField;
-    }
+        public void setNameField(
+                        TextField nameField) {
 
-    public void setUsernameField(
-            TextField usernameField) {
+                this.nameField = nameField;
+        }
 
-        this.usernameField = usernameField;
-    }
+        public TextField getUsernameField() {
 
-    public PasswordField getPasswordField() {
+                return usernameField;
+        }
 
-        return passwordField;
-    }
+        public void setUsernameField(
+                        TextField usernameField) {
 
-    public void setPasswordField(
-            PasswordField passwordField) {
+                this.usernameField = usernameField;
+        }
 
-        this.passwordField = passwordField;
-    }
+        public PasswordField getPasswordField() {
 
-    public PasswordField getRePasswordField() {
+                return passwordField;
+        }
 
-        return rePasswordField;
-    }
+        public void setPasswordField(
+                        PasswordField passwordField) {
 
-    public void setRePasswordField(
-            PasswordField rePasswordField) {
+                this.passwordField = passwordField;
+        }
 
-        this.rePasswordField = rePasswordField;
-    }
+        public PasswordField getRePasswordField() {
 
-    public Button getRegisterButton() {
+                return rePasswordField;
+        }
 
-        return registerButton;
-    }
+        public void setRePasswordField(
+                        PasswordField rePasswordField) {
 
-    public void setRegisterButton(
-            Button registerButton) {
+                this.rePasswordField = rePasswordField;
+        }
 
-        this.registerButton = registerButton;
-    }
+        public Button getRegisterButton() {
 
-    public Label getLoginLabel() {
+                return registerButton;
+        }
 
-        return loginLabel;
-    }
+        public void setRegisterButton(
+                        Button registerButton) {
 
-    public void setLoginLabel(
-            Label loginLabel) {
+                this.registerButton = registerButton;
+        }
 
-        this.loginLabel = loginLabel;
-    }
+        public Label getLoginLabel() {
+
+                return loginLabel;
+        }
+
+        public void setLoginLabel(
+                        Label loginLabel) {
+
+                this.loginLabel = loginLabel;
+        }
 }

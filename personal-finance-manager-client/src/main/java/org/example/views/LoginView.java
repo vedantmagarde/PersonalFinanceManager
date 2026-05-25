@@ -1,193 +1,198 @@
 package org.example.views;
 
 import javafx.geometry.Pos;
-
 import javafx.scene.Scene;
-
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-
 import javafx.scene.layout.VBox;
 
 import org.example.controllers.LoginController;
-
 import org.example.utils.Utilitie;
 import org.example.utils.ViewNavigator;
 
 public class LoginView {
 
-    private Label expenseTrackerLabel = new Label("Personal Finance Manager");
+        private Label expenseTrackerLabel = new Label("Personal Finance Manager");
 
-    private TextField usernameField = new TextField();
+        private TextField usernameField = new TextField();
 
-    private PasswordField passwordField = new PasswordField();
+        private PasswordField passwordField = new PasswordField();
 
-    private Button loginButton = new Button("Login");
+        private Button loginButton = new Button("Login");
 
-    private Label signupLabel = new Label("Don't have an account? Click Here");
+        private Label signupLabel = new Label("Don't have an account? Click Here");
 
-    public void show() {
+        public void show() {
 
-        Scene scene = createScene();
+                Scene scene = createScene();
 
-        scene.getStylesheets().add(
-                getClass()
-                        .getResource("/style.css")
-                        .toExternalForm());
+                scene.getStylesheets().add(
+                                getClass()
+                                                .getResource("/style.css")
+                                                .toExternalForm());
 
-        new LoginController(this);
+                new LoginController(this);
 
-        ViewNavigator.switchViews(scene);
-    }
+                ViewNavigator.switchViews(scene);
+        }
 
-    private Scene createScene() {
+        private Scene createScene() {
 
-        VBox mainContainerBox = new VBox(74);
+                VBox mainContainerBox = new VBox();
 
-        mainContainerBox
-                .getStyleClass()
-                .addAll("main-background");
+                mainContainerBox
+                                .getStyleClass()
+                                .add("login-background");
 
-        mainContainerBox.setAlignment(
-                Pos.TOP_CENTER);
+                mainContainerBox.setAlignment(
+                                Pos.CENTER);
 
-        expenseTrackerLabel
-                .getStyleClass()
-                .addAll(
-                        "header",
-                        "text-white");
+                /* MAIN LOGIN CARD */
 
-        VBox loginFormBox = createLoginFormBox();
+                VBox loginCard = new VBox(35);
 
-        mainContainerBox
-                .getChildren()
-                .addAll(
-                        expenseTrackerLabel,
-                        loginFormBox);
+                loginCard.getStyleClass().add(
+                                "login-card");
 
-        return new Scene(
-                mainContainerBox,
-                Utilitie.APP_WIDTH,
-                Utilitie.APP_HEIGHT);
-    }
+                loginCard.setAlignment(
+                                Pos.CENTER);
 
-    private VBox createLoginFormBox() {
+                /* TITLE */
 
-        VBox loginFormVBox = new VBox(51);
+                expenseTrackerLabel
+                                .getStyleClass()
+                                .add("login-title");
 
-        loginFormVBox.setAlignment(
-                Pos.CENTER);
+                /* LOGIN FORM */
 
-        usernameField
-                .getStyleClass()
-                .addAll(
-                        "field-background",
-                        "text-light-gray",
-                        "text-size-lg",
-                        "rounded-border");
+                VBox loginFormBox = createLoginFormBox();
 
-        usernameField.setPromptText(
-                "Enter Username");
+                loginCard
+                                .getChildren()
+                                .addAll(
+                                                expenseTrackerLabel,
+                                                loginFormBox);
 
-        usernameField.setMaxWidth(473);
+                mainContainerBox
+                                .getChildren()
+                                .add(loginCard);
 
-        passwordField
-                .getStyleClass()
-                .addAll(
-                        "field-background",
-                        "text-light-gray",
-                        "text-size-lg",
-                        "rounded-border");
+                return new Scene(
+                                mainContainerBox,
+                                Utilitie.APP_WIDTH,
+                                Utilitie.APP_HEIGHT);
+        }
 
-        passwordField.setPromptText(
-                "Enter Password");
+        private VBox createLoginFormBox() {
 
-        passwordField.setMaxWidth(473);
+                VBox loginFormVBox = new VBox(30);
 
-        loginButton
-                .getStyleClass()
-                .addAll(
-                        "text-size-lg",
-                        "bg-light-blue",
-                        "text-white",
-                        "text-weight-700",
-                        "rounded-border");
+                loginFormVBox
+                                .getStyleClass()
+                                .add("login-card");
 
-        loginButton.setMaxWidth(473);
+                loginFormVBox.setAlignment(
+                                Pos.CENTER);
 
-        signupLabel
-                .getStyleClass()
-                .addAll(
-                        "text-size-md",
-                        "text-light-gray",
-                        "text-underline",
-                        "link-text");
+                usernameField
+                                .getStyleClass()
+                                .add("login-field");
 
-        loginFormVBox
-                .getChildren()
-                .addAll(
-                        usernameField,
-                        passwordField,
-                        loginButton,
-                        signupLabel);
+                usernameField.setPromptText(
+                                "Enter Email");
 
-        return loginFormVBox;
-    }
+                usernameField.setMaxWidth(640);
 
-    public Label getExpenseTrackerLabel() {
+                passwordField
+                                .getStyleClass()
+                                .add("login-field");
 
-        return expenseTrackerLabel;
-    }
+                passwordField.setPromptText(
+                                "Enter Password");
 
-    public void setExpenseTrackerLabel(
-            Label expenseTrackerLabel) {
+                passwordField.setMaxWidth(640);
 
-        this.expenseTrackerLabel = expenseTrackerLabel;
-    }
+                loginButton
+                                .getStyleClass()
+                                .add("login-button");
 
-    public TextField getUsernameField() {
+                loginButton.setMaxWidth(640);
 
-        return usernameField;
-    }
+                usernameField.setOnAction(
+                                event -> loginButton.fire());
 
-    public void setUsernameField(
-            TextField usernameField) {
+                passwordField.setOnAction(
+                                event -> loginButton.fire());
 
-        this.usernameField = usernameField;
-    }
+                signupLabel
+                                .getStyleClass()
+                                .add("login-link");
 
-    public PasswordField getPasswordField() {
+                loginFormVBox
+                                .getChildren()
+                                .addAll(
+                                                usernameField,
+                                                passwordField,
+                                                loginButton,
+                                                signupLabel);
 
-        return passwordField;
-    }
+                return loginFormVBox;
+        }
 
-    public void setPasswordField(
-            PasswordField passwordField) {
+        public Label getExpenseTrackerLabel() {
 
-        this.passwordField = passwordField;
-    }
+                return expenseTrackerLabel;
+        }
 
-    public Button getLoginButton() {
+        public void setExpenseTrackerLabel(
+                        Label expenseTrackerLabel) {
 
-        return loginButton;
-    }
+                this.expenseTrackerLabel = expenseTrackerLabel;
+        }
 
-    public void setLoginButton(
-            Button loginButton) {
+        public TextField getUsernameField() {
 
-        this.loginButton = loginButton;
-    }
+                return usernameField;
+        }
 
-    public Label getSignupLabel() {
+        public void setUsernameField(
+                        TextField usernameField) {
 
-        return signupLabel;
-    }
+                this.usernameField = usernameField;
+        }
 
-    public void setSignupLabel(
-            Label signupLabel) {
+        public PasswordField getPasswordField() {
 
-        this.signupLabel = signupLabel;
-    }
+                return passwordField;
+        }
+
+        public void setPasswordField(
+                        PasswordField passwordField) {
+
+                this.passwordField = passwordField;
+        }
+
+        public Button getLoginButton() {
+
+                return loginButton;
+        }
+
+        public void setLoginButton(
+                        Button loginButton) {
+
+                this.loginButton = loginButton;
+        }
+
+        public Label getSignupLabel() {
+
+                return signupLabel;
+        }
+
+        public void setSignupLabel(
+                        Label signupLabel) {
+
+                this.signupLabel = signupLabel;
+        }
 }

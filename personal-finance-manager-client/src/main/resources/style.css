@@ -16,7 +16,7 @@ Button {
 
 Button:hover,
 .combo-box .list-cell:hover {
-  -fx-opacity: 0.85;
+  -fx-opacity: 0.88;
 }
 
 ScrollPane,
@@ -77,79 +77,155 @@ ScrollPane > .viewport {
 }
 
 .header {
-  -fx-font-size: 72px;
-  -fx-font-weight: 300;
-  -fx-text-fill: #0f172a;
-}
-
-/* =========================
-   LOGIN / SIGNUP UI
-========================= */
-
-.login-background {
-  -fx-background-color: linear-gradient(to bottom right, #dbeafe, #f8fafc);
-}
-
-.login-card {
-  -fx-background-color: #ffffff;
-  -fx-background-radius: 28px;
-  -fx-padding: 40px;
-  -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.18), 24, 0, 0, 10);
-}
-
-.login-title {
-  -fx-font-size: 42px;
+  -fx-font-size: 54px;
   -fx-font-weight: 800;
   -fx-text-fill: #0f172a;
 }
 
+/* =========================
+   LOGIN / SIGNUP LIGHT MODE
+========================= */
+
+.login-background {
+  -fx-background-color: linear-gradient(to bottom right, #edf4ff, #f8fbff);
+}
+
+/* =========================
+   MAIN LOGIN CARD
+========================= */
+
+.login-card {
+  -fx-background-color: #ffffff;
+
+  -fx-background-radius: 34px;
+  -fx-border-radius: 34px;
+
+  -fx-border-color: #dbeafe;
+  -fx-border-width: 1.5px;
+
+  -fx-padding: 55px 70px;
+
+  -fx-spacing: 35px;
+
+  -fx-alignment: center;
+
+  -fx-max-width: 760px;
+
+  -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.14), 30, 0, 0, 12);
+}
+
+/* =========================
+   LOGIN TITLE
+========================= */
+
+.login-title {
+  -fx-font-size: 50px;
+
+  -fx-font-weight: 800;
+
+  -fx-text-fill: #0f172a;
+
+  -fx-padding: 0 0 12px 0;
+}
+
+/* =========================
+   LOGIN SUBTITLE
+========================= */
+
 .login-subtitle {
-  -fx-font-size: 16px;
+  -fx-font-size: 18px;
+
   -fx-text-fill: #64748b;
 }
 
+/* =========================
+   INPUT FIELDS
+========================= */
+
 .login-field {
-  -fx-background-color: #f8fafc;
+  -fx-background-color: #ffffff;
+
   -fx-border-color: #cbd5e1;
-  -fx-border-radius: 14px;
-  -fx-background-radius: 14px;
-  -fx-padding: 12px;
-  -fx-font-size: 16px;
+  -fx-border-width: 2px;
+
+  -fx-border-radius: 18px;
+  -fx-background-radius: 18px;
+
+  -fx-padding: 14px 22px;
+
+  -fx-font-size: 22px;
+  -fx-font-weight: 500;
+
   -fx-text-fill: #0f172a;
+
+  -fx-prompt-text-fill: #94a3b8;
+
+  -fx-pref-width: 640px;
+  -fx-min-width: 640px;
+
+  -fx-pref-height: 62px;
+}
+
+.login-field:hover {
+  -fx-border-color: #93c5fd;
 }
 
 .login-field:focused {
-  -fx-border-color: #2563eb;
   -fx-background-color: #ffffff;
+
+  -fx-border-color: #2563eb;
+
+  -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.25), 16, 0, 0, 4);
 }
+
+/* =========================
+   LOGIN BUTTON
+========================= */
 
 .login-button {
   -fx-background-color: linear-gradient(to right, #2563eb, #38bdf8);
+
   -fx-text-fill: white;
-  -fx-background-radius: 16px;
-  -fx-padding: 14px;
-  -fx-font-size: 18px;
-  -fx-font-weight: 700;
+
+  -fx-background-radius: 18px;
+
+  -fx-padding: 15px 20px;
+
+  -fx-font-size: 22px;
+  -fx-font-weight: 800;
+
+  -fx-pref-width: 640px;
+  -fx-min-width: 640px;
+
+  -fx-pref-height: 64px;
+
+  -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.28), 16, 0, 0, 6);
 }
 
 .login-button:hover {
   -fx-background-color: linear-gradient(to right, #1d4ed8, #0ea5e9);
 }
 
+/* =========================
+   SIGNUP LINK
+========================= */
+
 .login-link {
   -fx-text-fill: #2563eb;
-  -fx-font-size: 15px;
+
+  -fx-font-size: 17px;
   -fx-font-weight: 600;
+
   -fx-cursor: hand;
 }
 
 .login-link:hover {
   -fx-text-fill: #0ea5e9;
+
   -fx-underline: true;
 }
-
 /* =========================
-   MODERN DASHBOARD CARDS
+   DASHBOARD CARDS
 ========================= */
 
 .summary-card {
@@ -179,17 +255,50 @@ ScrollPane > .viewport {
   -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.12), 16, 0, 0, 6);
 }
 
+/* =========================
+   TRANSACTION CARD HYBRID MODE
+========================= */
+
 .transaction-card {
-  -fx-background-color: #f8fafc;
+  -fx-background-color: linear-gradient(to right, #0f172a, #1e293b);
   -fx-background-radius: 18px;
-  -fx-padding: 14px;
-  -fx-border-color: #e2e8f0;
+  -fx-padding: 16px;
+  -fx-border-color: rgba(255, 255, 255, 0.08);
   -fx-border-radius: 18px;
-  -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.1), 10, 0, 0, 4);
+  -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.25), 12, 0, 0, 5);
 }
 
 .transaction-card:hover {
-  -fx-background-color: #eef6ff;
+  -fx-background-color: linear-gradient(to right, #1e293b, #334155);
+}
+
+.transaction-title {
+  -fx-text-fill: #f8fafc;
+  -fx-font-size: 24px;
+  -fx-font-weight: 600;
+}
+
+.transaction-date {
+  -fx-text-fill: #cbd5e1;
+  -fx-font-size: 13px;
+}
+
+.transaction-category {
+  -fx-text-fill: #22c55e;
+  -fx-font-size: 13px;
+  -fx-font-weight: 700;
+}
+
+.transaction-income {
+  -fx-text-fill: #22c55e;
+  -fx-font-size: 24px;
+  -fx-font-weight: 700;
+}
+
+.transaction-expense {
+  -fx-text-fill: #ef4444;
+  -fx-font-size: 24px;
+  -fx-font-weight: 700;
 }
 
 /* =========================
@@ -211,6 +320,8 @@ ScrollPane > .viewport {
 .danger-button {
   -fx-background-color: #ef4444;
   -fx-text-fill: white;
+  -fx-background-radius: 14px;
+  -fx-padding: 10px 20px;
 }
 
 .bg-light-red:hover,
@@ -219,9 +330,12 @@ ScrollPane > .viewport {
 }
 
 .edit-button {
-  -fx-background-color: #f1f5f9;
+  -fx-background-color: #f8fafc;
   -fx-text-fill: #0f172a;
   -fx-border-color: #cbd5e1;
+  -fx-border-radius: 14px;
+  -fx-background-radius: 14px;
+  -fx-padding: 10px 20px;
 }
 
 .edit-button:hover {
@@ -390,84 +504,4 @@ ScrollPane > .viewport {
 
 .default-color1.chart-legend-item-symbol {
   -fx-background-color: #ef4444;
-}
-
-
-
-
-
-
-
-
-
-
-/* Main panel stays light */
-.panel {
-  -fx-background-color: #ffffff;
-  -fx-background-radius: 24px;
-  -fx-border-color: #e2e8f0;
-  -fx-border-radius: 24px;
-  -fx-padding: 22px;
-  -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.12), 16, 0, 0, 6);
-}
-
-/* Recent transaction dark cards */
-.transaction-card {
-  -fx-background-color: linear-gradient(to right, #0f172a, #1e293b);
-  -fx-background-radius: 18px;
-  -fx-padding: 16px;
-  -fx-border-color: rgba(255, 255, 255, 0.08);
-  -fx-border-radius: 18px;
-  -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.25), 12, 0, 0, 5);
-}
-
-.transaction-card:hover {
-  -fx-background-color: linear-gradient(to right, #1e293b, #334155);
-}
-
-/* Text inside transaction card */
-.transaction-title {
-  -fx-text-fill: #f8fafc;
-  -fx-font-size: 24px;
-  -fx-font-weight: 600;
-}
-
-.transaction-date {
-  -fx-text-fill: #cbd5e1;
-  -fx-font-size: 13px;
-}
-
-.transaction-category {
-  -fx-text-fill: #22c55e;
-  -fx-font-size: 13px;
-  -fx-font-weight: 700;
-}
-
-.transaction-income {
-  -fx-text-fill: #22c55e;
-  -fx-font-size: 24px;
-  -fx-font-weight: 700;
-}
-
-.transaction-expense {
-  -fx-text-fill: #ef4444;
-  -fx-font-size: 24px;
-  -fx-font-weight: 700;
-}
-
-/* Buttons */
-.edit-button {
-  -fx-background-color: #f8fafc;
-  -fx-text-fill: #0f172a;
-  -fx-border-color: #cbd5e1;
-  -fx-border-radius: 14px;
-  -fx-background-radius: 14px;
-  -fx-padding: 10px 20px;
-}
-
-.danger-button {
-  -fx-background-color: #ef4444;
-  -fx-text-fill: white;
-  -fx-background-radius: 14px;
-  -fx-padding: 10px 20px;
 }
