@@ -2,270 +2,218 @@ package org.example.components;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-
 import javafx.scene.input.MouseEvent;
-
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-
 import javafx.scene.paint.Paint;
 
 import org.example.controllers.DashboardController;
-
 import org.example.dialogs.CreateOrEditTransactionDialog;
-
 import org.example.models.Transaction;
-
 import org.example.utils.SqlUtil;
 
 public class TransactionComponent extends HBox {
 
-    private Label transactionCategoryLabel;
-    private Label transactionNameLabel;
-    private Label transactionDateLabel;
-    private Label transactionAmountLabel;
+        private Label transactionCategoryLabel;
+        private Label transactionNameLabel;
+        private Label transactionDateLabel;
+        private Label transactionAmountLabel;
 
-    private Button editButton;
-    private Button delButton;
+        private Button editButton;
+        private Button delButton;
 
-    private DashboardController dashboardController;
-    private Transaction transaction;
+        private DashboardController dashboardController;
+        private Transaction transaction;
 
-    public TransactionComponent(
-            DashboardController dashboardController,
-            Transaction transaction
-    ) {
+        public TransactionComponent(
+                        DashboardController dashboardController,
+                        Transaction transaction) {
 
-        this.dashboardController = dashboardController;
-        this.transaction = transaction;
+                this.dashboardController = dashboardController;
+                this.transaction = transaction;
 
-        setSpacing(10);
+                setSpacing(16);
+                setAlignment(Pos.CENTER_LEFT);
 
-        setAlignment(Pos.CENTER_LEFT);
+                getStyleClass().add("transaction-card");
 
-        getStyleClass().addAll(
-                "main-background",
-                "rounded-border",
-                "padding-10px"
-        );
+                VBox categoryNameDateSection = createCategoryNameDateSection();
 
-        VBox categoryNameDateSection =
-                createCategoryNameDateSection();
+                Region region = new Region();
 
-        Region region = new Region();
+                HBox.setHgrow(
+                                region,
+                                Priority.ALWAYS);
 
-        HBox.setHgrow(
-                region,
-                Priority.ALWAYS
-        );
+                transactionAmountLabel = new Label(
+                                "₹" + transaction.getTransactionAmount());
 
-        transactionAmountLabel = new Label(
-                "$" + transaction.getTransactionAmount()
-        );
+                if (transaction.getTransactionType()
+                                .equalsIgnoreCase("expense")) {
 
-        transactionAmountLabel.getStyleClass().add(
-                "text-size-md"
-        );
+                        transactionAmountLabel
+                                        .getStyleClass()
+                                        .add("transaction-expense");
 
-        if (
-                transaction.getTransactionType()
-                        .equalsIgnoreCase("expense")
-        ) {
+                } else {
 
-            transactionAmountLabel
-                    .getStyleClass()
-                    .add("text-light-red");
+                        transactionAmountLabel
+                                        .getStyleClass()
+                                        .add("transaction-income");
+                }
 
-        } else {
+                HBox actionButtonSection = createActionButtons();
 
-            transactionAmountLabel
-                    .getStyleClass()
-                    .add("text-light-green");
+                getChildren().addAll(
+                                categoryNameDateSection,
+                                region,
+                                transactionAmountLabel,
+                                actionButtonSection);
         }
 
-        HBox actionButtonSection =
-                createActionButtons();
+        private VBox createCategoryNameDateSection() {
 
-        getChildren().addAll(
-                categoryNameDateSection,
-                region,
-                transactionAmountLabel,
-                actionButtonSection
-        );
-    }
+                VBox categoryNameDateSection = new VBox(4);
 
-    private VBox createCategoryNameDateSection() {
+                if (transaction.getTransactionCategory() == null) {
 
-        VBox categoryNameDateSection = new VBox();
+                        transactionCategoryLabel = new Label("Undefined");
 
-        if (transaction.getTransactionCategory() == null) {
+                        transactionCategoryLabel
+                                        .getStyleClass()
+                                        .add("transaction-date");
 
-            transactionCategoryLabel =
-                    new Label("Undefined");
+                } else {
 
-            transactionCategoryLabel
-                    .getStyleClass()
-                    .addAll("text-light-gray");
+                        transactionCategoryLabel = new Label(
+                                        transaction
+                                                        .getTransactionCategory()
+                                                        .getCategoryName());
 
-        } else {
+                        transactionCategoryLabel
+                                        .getStyleClass()
+                                        .add("transaction-category");
 
-            transactionCategoryLabel =
-                    new Label(
-                            transaction
-                                    .getTransactionCategory()
-                                    .getCategoryName()
-                    );
+                        transactionCategoryLabel.setTextFill(
+                                        Paint.valueOf(
+                                                        "#" +
+                                                                        transaction
+                                                                                        .getTransactionCategory()
+                                                                                        .getCategoryColor()));
+                }
 
-            transactionCategoryLabel.setTextFill(
-                    Paint.valueOf(
-                            "#" +
-                            transaction
-                                    .getTransactionCategory()
-                                    .getCategoryColor()
-                    )
-            );
+                transactionNameLabel = new Label(
+                                transaction.getTransactionName());
+
+                transactionNameLabel.getStyleClass().add(
+                                "transaction-title");
+
+                transactionDateLabel = new Label(
+                                transaction
+                                                .getTransactionDate()
+                                                .toString());
+
+                transactionDateLabel.getStyleClass().add(
+                                "transaction-date");
+
+                categoryNameDateSection
+                                .getChildren()
+                                .addAll(
+                                                transactionCategoryLabel,
+                                                transactionNameLabel,
+                                                transactionDateLabel);
+
+                return categoryNameDateSection;
         }
 
-        transactionNameLabel =
-                new Label(
-                        transaction.getTransactionName()
-                );
+        private HBox createActionButtons() {
 
-        transactionNameLabel.getStyleClass().addAll(
-                "text-light-gray",
-                "text-size-md"
-        );
+                HBox actionButtonSection = new HBox(16);
 
-        transactionDateLabel =
-                new Label(
-                        transaction
-                                .getTransactionDate()
-                                .toString()
-                );
+                actionButtonSection.setAlignment(
+                                Pos.CENTER);
 
-        transactionDateLabel.getStyleClass().addAll(
-                "text-light-gray"
-        );
+                editButton = new Button("Edit");
 
-        categoryNameDateSection
-                .getChildren()
-                .addAll(
-                        transactionCategoryLabel,
-                        transactionNameLabel,
-                        transactionDateLabel
-                );
+                editButton.getStyleClass().addAll(
+                                "edit-button",
+                                "text-size-md");
 
-        return categoryNameDateSection;
-    }
+                editButton.setOnMouseClicked(
+                                new EventHandler<MouseEvent>() {
 
-    private HBox createActionButtons() {
+                                        @Override
+                                        public void handle(
+                                                        MouseEvent mouseEvent) {
 
-        HBox actionButtonSection =
-                new HBox(20);
+                                                new CreateOrEditTransactionDialog(
+                                                                dashboardController,
+                                                                TransactionComponent.this,
+                                                                true).showAndWait();
+                                        }
+                                });
 
-        actionButtonSection.setAlignment(
-                Pos.CENTER
-        );
+                delButton = new Button("Del");
 
-        editButton = new Button("Edit");
+                delButton.getStyleClass().addAll(
+                                "danger-button",
+                                "text-size-md");
 
-        editButton.getStyleClass().addAll(
-                "text-size-md",
-                "rounded-border"
-        );
+                delButton.setOnMouseClicked(
+                                new EventHandler<MouseEvent>() {
 
-        editButton.setOnMouseClicked(
-                new EventHandler<MouseEvent>() {
+                                        @Override
+                                        public void handle(
+                                                        MouseEvent mouseEvent) {
 
-                    @Override
-                    public void handle(
-                            MouseEvent mouseEvent
-                    ) {
+                                                if (!SqlUtil.deleteTransactionById(
+                                                                transaction.getId())) {
+                                                        return;
+                                                }
 
-                        new CreateOrEditTransactionDialog(
-                                dashboardController,
-                                TransactionComponent.this,
-                                true
-                        ).showAndWait();
-                    }
-                }
-        );
+                                                setVisible(false);
+                                                setManaged(false);
 
-        delButton = new Button("Del");
+                                                if (getParent() instanceof VBox) {
 
-        delButton.getStyleClass().addAll(
-                "text-size-md",
-                "rounded-border",
-                "bg-light-red",
-                "text-white"
-        );
+                                                        ((VBox) getParent())
+                                                                        .getChildren()
+                                                                        .remove(
+                                                                                        TransactionComponent.this);
+                                                }
 
-        delButton.setOnMouseClicked(
-                new EventHandler<MouseEvent>() {
+                                                dashboardController.fetchUserData();
+                                        }
+                                });
 
-                    @Override
-                    public void handle(
-                            MouseEvent mouseEvent
-                    ) {
+                actionButtonSection.getChildren().addAll(
+                                editButton,
+                                delButton);
 
-                        if (
-                                !SqlUtil.deleteTransactionById(
-                                        transaction.getId()
-                                )
-                        ) {
-                            return;
-                        }
+                return actionButtonSection;
+        }
 
-                        // remove component
-                        setVisible(false);
+        public Transaction getTransaction() {
+                return transaction;
+        }
 
-                        setManaged(false);
+        public Label getTransactionCategoryLabel() {
+                return transactionCategoryLabel;
+        }
 
-                        if (getParent() instanceof VBox) {
+        public Label getTransactionNameLabel() {
+                return transactionNameLabel;
+        }
 
-                            ((VBox) getParent())
-                                    .getChildren()
-                                    .remove(
-                                            TransactionComponent.this
-                                    );
-                        }
+        public Label getTransactionDateLabel() {
+                return transactionDateLabel;
+        }
 
-                        // refresh dashboard
-                        dashboardController.fetchUserData();
-                    }
-                }
-        );
-
-        actionButtonSection.getChildren().addAll(
-                editButton,
-                delButton
-        );
-
-        return actionButtonSection;
-    }
-
-    public Transaction getTransaction() {
-        return transaction;
-    }
-
-    public Label getTransactionCategoryLabel() {
-        return transactionCategoryLabel;
-    }
-
-    public Label getTransactionNameLabel() {
-        return transactionNameLabel;
-    }
-
-    public Label getTransactionDateLabel() {
-        return transactionDateLabel;
-    }
-
-    public Label getTransactionAmountLabel() {
-        return transactionAmountLabel;
-    }
+        public Label getTransactionAmountLabel() {
+                return transactionAmountLabel;
+        }
 }

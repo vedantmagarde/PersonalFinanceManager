@@ -1,579 +1,512 @@
 package org.example.views;
 
 import javafx.application.Platform;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-
 import javafx.scene.Scene;
-
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
 import org.example.animations.LoadingAnimationPane;
-
 import org.example.controllers.DashboardController;
-
 import org.example.models.MonthlyFinance;
-
 import org.example.utils.Utilitie;
 import org.example.utils.ViewNavigator;
 
 import java.math.BigDecimal;
-
 import java.time.Year;
 
 public class DashboardView {
 
-    private String email;
+        private String email;
 
-    private LoadingAnimationPane loadingAnimationPane;
+        private LoadingAnimationPane loadingAnimationPane;
 
-    private Label currentBalanceLabel;
-    private Label currentBalance;
+        private Label currentBalanceLabel;
+        private Label currentBalance;
 
-    private Label totalIncomeLabel;
-    private Label totalIncome;
+        private Label totalIncomeLabel;
+        private Label totalIncome;
 
-    private Label totalExpenseLabel;
-    private Label totalExpense;
+        private Label totalExpenseLabel;
+        private Label totalExpense;
 
-    private ComboBox<Integer> yearComboBox;
+        private ComboBox<Integer> yearComboBox;
 
-    private Button addTransactionButton;
-    private Button viewChartButton;
+        private Button addTransactionButton;
+        private Button viewChartButton;
 
-    private VBox recentTransactionBox;
+        private VBox recentTransactionBox;
 
-    private ScrollPane recentTransactionsScrollPane;
+        private ScrollPane recentTransactionsScrollPane;
 
-    private MenuItem createCategoryMenuItem;
-    private MenuItem viewCategoriesMenuItem;
-    private MenuItem logoutMenuItem;
+        private MenuItem createCategoryMenuItem;
+        private MenuItem viewCategoriesMenuItem;
+        private MenuItem logoutMenuItem;
 
-    // table
-    private TableView<MonthlyFinance> transactionTable;
+        private TableView<MonthlyFinance> transactionTable;
 
-    private TableColumn<MonthlyFinance, String> monthColumn;
+        private TableColumn<MonthlyFinance, String> monthColumn;
+        private TableColumn<MonthlyFinance, BigDecimal> incomeColumn;
+        private TableColumn<MonthlyFinance, BigDecimal> expenseColumn;
 
-    private TableColumn<MonthlyFinance, BigDecimal> incomeColumn;
+        public DashboardView(String email) {
 
-    private TableColumn<MonthlyFinance, BigDecimal> expenseColumn;
+                this.email = email;
 
-    public DashboardView(String email) {
+                loadingAnimationPane = new LoadingAnimationPane(
+                                Utilitie.APP_WIDTH,
+                                Utilitie.APP_HEIGHT);
 
-        this.email = email;
+                currentBalanceLabel = new Label("Current Balance:");
+                totalIncomeLabel = new Label("Total Income:");
+                totalExpenseLabel = new Label("Total Expense:");
 
-        loadingAnimationPane = new LoadingAnimationPane(
-                Utilitie.APP_WIDTH,
-                Utilitie.APP_HEIGHT);
+                addTransactionButton = new Button("+");
 
-        currentBalanceLabel = new Label("Current Balance:");
+                currentBalance = new Label("$0.00");
+                totalIncome = new Label("$0.00");
+                totalExpense = new Label("$0.00");
+        }
 
-        totalIncomeLabel = new Label("Total Income:");
+        public void show() {
 
-        totalExpenseLabel = new Label("Total Expense:");
+                Scene scene = createScene();
 
-        addTransactionButton = new Button("+");
+                scene.getStylesheets().add(
+                                getClass()
+                                                .getResource("/style.css")
+                                                .toExternalForm());
 
-        currentBalance = new Label("$0.00");
+                new DashboardController(this);
 
-        totalIncome = new Label("$0.00");
+                scene.widthProperty().addListener(
+                                new ChangeListener<Number>() {
 
-        totalExpense = new Label("$0.00");
-    }
+                                        @Override
+                                        public void changed(
+                                                        ObservableValue<? extends Number> observableValue,
+                                                        Number number,
+                                                        Number t1) {
 
-    public void show() {
+                                                loadingAnimationPane.resizeWidth(
+                                                                t1.doubleValue());
 
-        Scene scene = createScene();
+                                                resizeTableWidthColumns();
+                                        }
+                                });
 
-        scene.getStylesheets().add(
-                getClass()
-                        .getResource("/style.css")
-                        .toExternalForm());
+                scene.heightProperty().addListener(
+                                new ChangeListener<Number>() {
 
-        new DashboardController(this);
+                                        @Override
+                                        public void changed(
+                                                        ObservableValue<? extends Number> observableValue,
+                                                        Number number,
+                                                        Number t1) {
 
-        scene.widthProperty().addListener(
-                new ChangeListener<Number>() {
+                                                loadingAnimationPane.resizeHeight(
+                                                                t1.doubleValue());
+                                        }
+                                });
 
-                    @Override
-                    public void changed(
-                            ObservableValue<? extends Number> observableValue,
-                            Number number,
-                            Number t1) {
+                ViewNavigator.switchViews(scene);
+        }
 
-                        loadingAnimationPane.resizeWidth(
-                                t1.doubleValue());
+        private Scene createScene() {
 
-                        resizeTableWidthColumns();
-                    }
-                });
+                MenuBar menuBar = createMenuBar();
 
-        scene.heightProperty().addListener(
-                new ChangeListener<Number>() {
+                VBox mainContainer = new VBox();
 
-                    @Override
-                    public void changed(
-                            ObservableValue<? extends Number> observableValue,
-                            Number number,
-                            Number t1) {
+                mainContainer.getStyleClass().addAll(
+                                "main-background");
 
-                        loadingAnimationPane.resizeHeight(
-                                t1.doubleValue());
-                    }
-                });
+                VBox mainContainerWrapper = new VBox(25);
 
-        ViewNavigator.switchViews(scene);
-    }
+                mainContainerWrapper.getStyleClass().addAll(
+                                "dashboard-padding");
 
-    private Scene createScene() {
+                VBox.setVgrow(
+                                mainContainerWrapper,
+                                Priority.ALWAYS);
 
-        MenuBar menuBar = createMenuBar();
+                HBox balanceSummaryBox = createBalanceSummaryBox();
 
-        VBox mainContainer = new VBox();
+                GridPane contentGridPane = createContentGridPane();
 
-        mainContainer.getStyleClass().addAll(
-                "main-background");
+                VBox.setVgrow(
+                                contentGridPane,
+                                Priority.ALWAYS);
 
-        VBox mainContainerWrapper = new VBox();
+                mainContainerWrapper.getChildren().addAll(
+                                balanceSummaryBox,
+                                contentGridPane);
 
-        mainContainerWrapper.getStyleClass().addAll(
-                "dashboard-padding");
+                mainContainer.getChildren().addAll(
+                                menuBar,
+                                mainContainerWrapper,
+                                loadingAnimationPane);
 
-        VBox.setVgrow(
-                mainContainerWrapper,
-                Priority.ALWAYS);
+                return new Scene(
+                                mainContainer,
+                                Utilitie.APP_WIDTH,
+                                Utilitie.APP_HEIGHT);
+        }
 
-        HBox balanceSummaryBox = createBalanceSummaryBox();
+        private MenuBar createMenuBar() {
 
-        GridPane contentGridPane = createContentGridPane();
+                MenuBar menuBar = new MenuBar();
 
-        VBox.setVgrow(
-                contentGridPane,
-                Priority.ALWAYS);
+                Menu fileMenu = new Menu("☰ More");
 
-        mainContainerWrapper.getChildren().addAll(
-                balanceSummaryBox,
-                contentGridPane);
+                createCategoryMenuItem = new MenuItem("➕ Create Category");
+                viewCategoriesMenuItem = new MenuItem("📂 View Categories");
+                logoutMenuItem = new MenuItem("🚪 Logout");
 
-        mainContainer.getChildren().addAll(
-                menuBar,
-                mainContainerWrapper,
-                loadingAnimationPane);
+                fileMenu.getItems().addAll(
+                                createCategoryMenuItem,
+                                viewCategoriesMenuItem,
+                                logoutMenuItem);
 
-        return new Scene(
-                mainContainer,
-                Utilitie.APP_WIDTH,
-                Utilitie.APP_HEIGHT);
-    }
+                menuBar.getMenus().add(fileMenu);
 
-    private MenuBar createMenuBar() {
+                return menuBar;
+        }
 
-        MenuBar menuBar = new MenuBar();
+        private HBox createBalanceSummaryBox() {
 
-        menuBar.setStyle("""
-                    -fx-background-color: #2b2b2b;
-                    -fx-padding: 8px;
-                """);
+                HBox balanceSummaryBox = new HBox(20);
 
-        Menu fileMenu = new Menu("☰ More");
+                VBox currentBalanceBox = new VBox(10);
 
-        fileMenu.setStyle("""
-                    -fx-font-size: 18px;
-                    -fx-font-weight: bold;
-                """);
+                currentBalanceBox.getStyleClass().addAll(
+                                "summary-card",
+                                "balance-card");
 
-        createCategoryMenuItem = new MenuItem("➕ Create Category");
+                currentBalanceLabel.getStyleClass().addAll(
+                                "text-size-md",
+                                "text-white");
 
-        viewCategoriesMenuItem = new MenuItem("📂 View Categories");
+                currentBalance.getStyleClass().addAll(
+                                "text-size-lg",
+                                "text-white",
+                                "text-weight-700");
 
-        logoutMenuItem = new MenuItem("🚪 Logout");
+                currentBalanceBox.getChildren().addAll(
+                                currentBalanceLabel,
+                                currentBalance);
 
-        createCategoryMenuItem.setStyle(
-                "-fx-font-size: 16px;");
+                HBox.setHgrow(
+                                currentBalanceBox,
+                                Priority.ALWAYS);
 
-        viewCategoriesMenuItem.setStyle(
-                "-fx-font-size: 16px;");
+                VBox totalIncomeBox = new VBox(10);
 
-        logoutMenuItem.setStyle(
-                "-fx-font-size: 16px;");
+                totalIncomeBox.getStyleClass().addAll(
+                                "summary-card",
+                                "income-card");
 
-        fileMenu.getItems().addAll(
-                createCategoryMenuItem,
-                viewCategoriesMenuItem,
-                logoutMenuItem);
+                totalIncomeLabel.getStyleClass().addAll(
+                                "text-size-md",
+                                "text-white");
 
-        menuBar.getMenus().add(fileMenu);
+                totalIncome.getStyleClass().addAll(
+                                "text-size-lg",
+                                "text-white",
+                                "text-weight-700");
 
-        return menuBar;
-    }
+                totalIncomeBox.getChildren().addAll(
+                                totalIncomeLabel,
+                                totalIncome);
 
-    private HBox createBalanceSummaryBox() {
+                HBox.setHgrow(
+                                totalIncomeBox,
+                                Priority.ALWAYS);
 
-        HBox balanceSummaryBox = new HBox();
+                VBox totalExpenseBox = new VBox(10);
 
-        VBox currentBalanceBox = new VBox();
+                totalExpenseBox.getStyleClass().addAll(
+                                "summary-card",
+                                "expense-card");
 
-        currentBalanceLabel.getStyleClass().addAll(
-                "text-size-lg",
-                "text-light-gray");
+                totalExpenseLabel.getStyleClass().addAll(
+                                "text-size-md",
+                                "text-white");
 
-        currentBalance.getStyleClass().addAll(
-                "text-size-lg",
-                "text-white");
+                totalExpense.getStyleClass().addAll(
+                                "text-size-lg",
+                                "text-white",
+                                "text-weight-700");
 
-        currentBalanceBox.getChildren().addAll(
-                currentBalanceLabel,
-                currentBalance);
+                totalExpenseBox.getChildren().addAll(
+                                totalExpenseLabel,
+                                totalExpense);
 
-        Region region1 = new Region();
+                HBox.setHgrow(
+                                totalExpenseBox,
+                                Priority.ALWAYS);
 
-        HBox.setHgrow(
-                region1,
-                Priority.ALWAYS);
+                balanceSummaryBox.getChildren().addAll(
+                                currentBalanceBox,
+                                totalIncomeBox,
+                                totalExpenseBox);
 
-        VBox totalIncomeBox = new VBox();
+                return balanceSummaryBox;
+        }
 
-        totalIncomeLabel.getStyleClass().addAll(
-                "text-size-lg",
-                "text-light-gray");
+        private GridPane createContentGridPane() {
 
-        totalIncome.getStyleClass().addAll(
-                "text-size-lg",
-                "text-white");
+                GridPane gridPane = new GridPane();
 
-        totalIncomeBox.getChildren().addAll(
-                totalIncomeLabel,
-                totalIncome);
+                gridPane.setHgap(20);
 
-        Region region2 = new Region();
+                ColumnConstraints columnConstraint = new ColumnConstraints();
 
-        HBox.setHgrow(
-                region2,
-                Priority.ALWAYS);
+                columnConstraint.setPercentWidth(50);
 
-        VBox totalExpenseBox = new VBox();
+                gridPane.getColumnConstraints().addAll(
+                                columnConstraint,
+                                columnConstraint);
 
-        totalExpenseLabel.getStyleClass().addAll(
-                "text-size-lg",
-                "text-light-gray");
+                VBox transactionsTableSummaryBox = new VBox(20);
 
-        totalExpense.getStyleClass().addAll(
-                "text-size-lg",
-                "text-white");
+                transactionsTableSummaryBox.getStyleClass().add(
+                                "panel");
 
-        totalExpenseBox.getChildren().addAll(
-                totalExpenseLabel,
-                totalExpense);
+                HBox yearComboBoxAndChartButtonBox = createYearComboBoxAndChartButtonBox();
 
-        balanceSummaryBox.getChildren().addAll(
-                currentBalanceBox,
-                region1,
-                totalIncomeBox,
-                region2,
-                totalExpenseBox);
+                VBox transactionTableContentBox = createTransactionsTableContentBox();
 
-        return balanceSummaryBox;
-    }
+                VBox.setVgrow(
+                                transactionTableContentBox,
+                                Priority.ALWAYS);
 
-    private GridPane createContentGridPane() {
+                transactionsTableSummaryBox
+                                .getChildren()
+                                .addAll(
+                                                yearComboBoxAndChartButtonBox,
+                                                transactionTableContentBox);
 
-        GridPane gridPane = new GridPane();
+                VBox recentTransactionsVBox = createRecentTransactionsVBox();
 
-        gridPane.setHgap(10);
+                recentTransactionsVBox.getStyleClass().add(
+                                "panel");
 
-        ColumnConstraints columnConstraint = new ColumnConstraints();
+                GridPane.setVgrow(
+                                recentTransactionsVBox,
+                                Priority.ALWAYS);
 
-        columnConstraint.setPercentWidth(50);
+                gridPane.add(
+                                transactionsTableSummaryBox,
+                                0,
+                                0);
 
-        gridPane.getColumnConstraints().addAll(
-                columnConstraint,
-                columnConstraint);
+                gridPane.add(
+                                recentTransactionsVBox,
+                                1,
+                                0);
 
-        VBox transactionsTableSummaryBox = new VBox(20);
+                return gridPane;
+        }
 
-        HBox yearComboBoxAndChartButtonBox = createYearComboBoxAndChartButtonBox();
+        private HBox createYearComboBoxAndChartButtonBox() {
 
-        VBox transactionTableContentBox = createTransactionsTableContentBox();
+                HBox hbox = new HBox(15);
 
-        VBox.setVgrow(
-                transactionTableContentBox,
-                Priority.ALWAYS);
+                yearComboBox = new ComboBox<>();
 
-        transactionsTableSummaryBox
-                .getChildren()
-                .addAll(
-                        yearComboBoxAndChartButtonBox,
-                        transactionTableContentBox);
+                yearComboBox.getStyleClass().addAll(
+                                "text-size-md");
 
-        VBox recentTransactionsVBox = createRecentTransactionsVBox();
+                yearComboBox.setValue(
+                                Year.now().getValue());
 
-        recentTransactionsVBox.getStyleClass().addAll(
-                "field-background",
-                "rounded-border",
-                "padding-10px");
+                viewChartButton = new Button("View Chart");
 
-        GridPane.setVgrow(
-                recentTransactionsVBox,
-                Priority.ALWAYS);
+                viewChartButton.getStyleClass().addAll(
+                                "primary-button",
+                                "text-size-md");
 
-        gridPane.add(
-                transactionsTableSummaryBox,
-                0,
-                0);
+                hbox.getChildren().addAll(
+                                yearComboBox,
+                                viewChartButton);
 
-        gridPane.add(
-                recentTransactionsVBox,
-                1,
-                0);
+                return hbox;
+        }
 
-        return gridPane;
-    }
+        private VBox createTransactionsTableContentBox() {
 
-    private HBox createYearComboBoxAndChartButtonBox() {
+                VBox vbox = new VBox();
 
-        HBox hbox = new HBox(15);
+                transactionTable = new TableView<>();
 
-        yearComboBox = new ComboBox<>();
+                VBox.setVgrow(
+                                transactionTable,
+                                Priority.ALWAYS);
 
-        yearComboBox.getStyleClass().addAll(
-                "text-size-md");
+                monthColumn = new TableColumn<>("Month");
 
-        yearComboBox.setValue(
-                Year.now().getValue());
+                monthColumn.setCellValueFactory(
+                                new PropertyValueFactory<>("month"));
 
-        viewChartButton = new Button("View Chart");
+                incomeColumn = new TableColumn<>("Income");
 
-        viewChartButton.getStyleClass().addAll(
-                "field-background",
-                "text-light-gray",
-                "text-size-md");
+                incomeColumn.setCellValueFactory(
+                                new PropertyValueFactory<>("income"));
 
-        hbox.getChildren().addAll(
-                yearComboBox,
-                viewChartButton);
+                expenseColumn = new TableColumn<>("Expense");
 
-        return hbox;
-    }
+                expenseColumn.setCellValueFactory(
+                                new PropertyValueFactory<>("expense"));
 
-    private VBox createTransactionsTableContentBox() {
+                transactionTable.getColumns().addAll(
+                                monthColumn,
+                                incomeColumn,
+                                expenseColumn);
 
-        VBox vbox = new VBox();
+                vbox.getChildren().addAll(
+                                transactionTable);
 
-        transactionTable = new TableView<>();
+                resizeTableWidthColumns();
 
-        VBox.setVgrow(
-                transactionTable,
-                Priority.ALWAYS);
+                return vbox;
+        }
 
-        monthColumn = new TableColumn<>("Month");
+        private VBox createRecentTransactionsVBox() {
 
-        monthColumn.setCellValueFactory(
-                new PropertyValueFactory<>("month"));
+                VBox recentTransactionsVBox = new VBox(15);
 
-        monthColumn.getStyleClass().addAll(
-                "main-background",
-                "text-size-md",
-                "text-light-gray");
+                HBox recentTransactionLabelAndAddBtnBox = new HBox();
 
-        incomeColumn = new TableColumn<>("Income");
+                Label recentTransactionsLabel = new Label("Recent Transactions");
 
-        incomeColumn.setCellValueFactory(
-                new PropertyValueFactory<>("income"));
+                recentTransactionsLabel.getStyleClass().addAll(
+                                "text-size-md",
+                                "text-white",
+                                "text-weight-700");
 
-        incomeColumn.getStyleClass().addAll(
-                "main-background",
-                "text-size-md",
-                "text-light-gray");
+                Region labelAndButtonSpaceRegion = new Region();
 
-        expenseColumn = new TableColumn<>("Expense");
+                HBox.setHgrow(
+                                labelAndButtonSpaceRegion,
+                                Priority.ALWAYS);
 
-        expenseColumn.setCellValueFactory(
-                new PropertyValueFactory<>("expense"));
+                addTransactionButton.getStyleClass().addAll(
+                                "primary-button",
+                                "text-size-md");
 
-        expenseColumn.getStyleClass().addAll(
-                "main-background",
-                "text-size-md",
-                "text-light-gray");
+                recentTransactionLabelAndAddBtnBox
+                                .getChildren()
+                                .addAll(
+                                                recentTransactionsLabel,
+                                                labelAndButtonSpaceRegion,
+                                                addTransactionButton);
 
-        transactionTable.getColumns().addAll(
-                monthColumn,
-                incomeColumn,
-                expenseColumn);
+                recentTransactionBox = new VBox(10);
 
-        vbox.getChildren().addAll(transactionTable);
+                recentTransactionsScrollPane = new ScrollPane(
+                                recentTransactionBox);
 
-        resizeTableWidthColumns();
+                recentTransactionsScrollPane.setFitToWidth(true);
+                recentTransactionsScrollPane.setFitToHeight(true);
 
-        return vbox;
-    }
+                VBox.setVgrow(
+                                recentTransactionsScrollPane,
+                                Priority.ALWAYS);
 
-    private VBox createRecentTransactionsVBox() {
+                recentTransactionsVBox.getChildren().addAll(
+                                recentTransactionLabelAndAddBtnBox,
+                                recentTransactionsScrollPane);
 
-        VBox recentTransactionsVBox = new VBox();
+                return recentTransactionsVBox;
+        }
 
-        HBox recentTransactionLabelAndAddBtnBox = new HBox();
+        private void resizeTableWidthColumns() {
 
-        Label recentTransactionsLabel = new Label("Recent Transactions");
+                Platform.runLater(
+                                new Runnable() {
 
-        recentTransactionsLabel.getStyleClass().addAll(
-                "text-size-lg",
-                "text-light-gray");
+                                        @Override
+                                        public void run() {
 
-        Region labelAndButtonSpaceRegion = new Region();
+                                                double colsWidth = transactionTable.getWidth()
+                                                                * 0.335;
 
-        HBox.setHgrow(
-                labelAndButtonSpaceRegion,
-                Priority.ALWAYS);
+                                                monthColumn.setPrefWidth(colsWidth);
+                                                incomeColumn.setPrefWidth(colsWidth);
+                                                expenseColumn.setPrefWidth(colsWidth);
+                                        }
+                                });
+        }
 
-        addTransactionButton.getStyleClass().addAll(
-                "field-background",
-                "text-size-md",
-                "text-light-gray",
-                "rounded-border");
+        public MenuItem getCreateCategoryMenuItem() {
+                return createCategoryMenuItem;
+        }
 
-        recentTransactionLabelAndAddBtnBox
-                .getChildren()
-                .addAll(
-                        recentTransactionsLabel,
-                        labelAndButtonSpaceRegion,
-                        addTransactionButton);
+        public void setCreateCategoryMenuItem(
+                        MenuItem createCategoryMenuItem) {
+                this.createCategoryMenuItem = createCategoryMenuItem;
+        }
 
-        recentTransactionBox = new VBox(10);
+        public MenuItem getViewCategoriesMenuItem() {
+                return viewCategoriesMenuItem;
+        }
 
-        recentTransactionsScrollPane = new ScrollPane(recentTransactionBox);
+        public MenuItem getLogoutMenuItem() {
+                return logoutMenuItem;
+        }
 
-        recentTransactionsScrollPane.setFitToWidth(true);
+        public String getEmail() {
+                return email;
+        }
 
-        recentTransactionsScrollPane.setFitToHeight(true);
+        public Button getAddTransactionButton() {
+                return addTransactionButton;
+        }
 
-        recentTransactionsVBox.getChildren().addAll(
-                recentTransactionLabelAndAddBtnBox,
-                recentTransactionsScrollPane);
+        public VBox getRecentTransactionBox() {
+                return recentTransactionBox;
+        }
 
-        return recentTransactionsVBox;
-    }
+        public LoadingAnimationPane getLoadingAnimationPane() {
+                return loadingAnimationPane;
+        }
 
-    private void resizeTableWidthColumns() {
+        public TableView<MonthlyFinance> getTransactionTable() {
+                return transactionTable;
+        }
 
-        Platform.runLater(
-                new Runnable() {
+        public TableColumn<MonthlyFinance, String> getMonthColumn() {
+                return monthColumn;
+        }
 
-                    @Override
-                    public void run() {
+        public TableColumn<MonthlyFinance, BigDecimal> getIncomeColumn() {
+                return incomeColumn;
+        }
 
-                        double colsWidth = transactionTable.getWidth()
-                                * 0.335;
+        public TableColumn<MonthlyFinance, BigDecimal> getExpenseColumn() {
+                return expenseColumn;
+        }
 
-                        monthColumn.setPrefWidth(colsWidth);
+        public ComboBox<Integer> getYearComboBox() {
+                return yearComboBox;
+        }
 
-                        incomeColumn.setPrefWidth(colsWidth);
+        public Label getCurrentBalance() {
+                return currentBalance;
+        }
 
-                        expenseColumn.setPrefWidth(colsWidth);
-                    }
-                });
-    }
+        public Label getTotalIncome() {
+                return totalIncome;
+        }
 
-    public MenuItem getCreateCategoryMenuItem() {
+        public Label getTotalExpense() {
+                return totalExpense;
+        }
 
-        return createCategoryMenuItem;
-    }
-
-    public void setCreateCategoryMenuItem(
-            MenuItem createCategoryMenuItem) {
-
-        this.createCategoryMenuItem = createCategoryMenuItem;
-    }
-
-    public MenuItem getViewCategoriesMenuItem() {
-
-        return viewCategoriesMenuItem;
-    }
-
-    public MenuItem getLogoutMenuItem() {
-
-        return logoutMenuItem;
-    }
-
-    public String getEmail() {
-
-        return email;
-    }
-
-    public Button getAddTransactionButton() {
-
-        return addTransactionButton;
-    }
-
-    public VBox getRecentTransactionBox() {
-
-        return recentTransactionBox;
-    }
-
-    public LoadingAnimationPane getLoadingAnimationPane() {
-
-        return loadingAnimationPane;
-    }
-
-    public TableView<MonthlyFinance> getTransactionTable() {
-
-        return transactionTable;
-    }
-
-    public TableColumn<MonthlyFinance, String> getMonthColumn() {
-
-        return monthColumn;
-    }
-
-    public TableColumn<MonthlyFinance, BigDecimal> getIncomeColumn() {
-
-        return incomeColumn;
-    }
-
-    public TableColumn<MonthlyFinance, BigDecimal> getExpenseColumn() {
-
-        return expenseColumn;
-    }
-
-    public ComboBox<Integer> getYearComboBox() {
-
-        return yearComboBox;
-    }
-
-    public Label getCurrentBalance() {
-
-        return currentBalance;
-    }
-
-    public Label getTotalIncome() {
-
-        return totalIncome;
-    }
-
-    public Label getTotalExpense() {
-
-        return totalExpense;
-    }
-
-    public Button getViewChartButton() {
-
-        return viewChartButton;
-    }
+        public Button getViewChartButton() {
+                return viewChartButton;
+        }
 }

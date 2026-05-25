@@ -1,6 +1,7 @@
 module personal.finance.manager.client {
 
     requires javafx.controls;
+    requires java.net.http;
     requires com.google.gson;
 
     opens org.example.models to javafx.base, com.google.gson;

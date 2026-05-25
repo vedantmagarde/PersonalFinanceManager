@@ -119,11 +119,11 @@ public class DashboardController {
 
         currentBalance = currentBalance.setScale(2, RoundingMode.HALF_UP);
 
-        dashboardView.getTotalExpense().setText("$" + totalExpense);
+        dashboardView.getTotalExpense().setText("₹" + totalExpense);
 
-        dashboardView.getTotalIncome().setText("$" + totalIncome);
+        dashboardView.getTotalIncome().setText("₹" + totalIncome);
 
-        dashboardView.getCurrentBalance().setText("$" + currentBalance);
+        dashboardView.getCurrentBalance().setText("₹" + currentBalance);
     }
 
     private void createRecentTransactionComponents() {
